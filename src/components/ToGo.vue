@@ -84,8 +84,12 @@ export default {
       this.$store.dispatch('GetWxUserBycode', {code}).then((value) => {
         //this.loading = false
         const userId = value.user.userId
-        if(value.token=='no_token')
+        if(value.token=='no_token'){
           this.$router.push({ path: this.redirect || `/setrole/${userId}` })
+        }else if(value.token!='no_token'){
+          const userId = value.user.username
+          this.$router.push({ path: this.redirect || `/main/${userId}`  })
+        }
       }).catch(() => {
         //this.loading = false
       })
