@@ -26,3 +26,11 @@ export function getWxUserBycode(params){
     })
     
 }
+
+export function addUser(data) {
+  return request({
+    url: '/jspapi/addUser/1000006',
+    method: 'post',
+    data
+  })
+}

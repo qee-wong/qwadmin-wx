@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="">
     <h1>{{ msg }}</h1>
     <h2>Essential Links qw</h2>
     
@@ -54,7 +54,7 @@ export default {
   },
   data () {
     return {
-      msg: 'lll ！',
+      msg: 'TOGO ！',
       description: 'msg description',
       icon: '',
       buttons: [{
@@ -77,66 +77,62 @@ export default {
     var weixinurl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${CORPID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect`
 
 
-    if(code=='' || code == undefined) window.location.href = weixinurl;
+    if(code=='' || code == undefined) {
+      window.location.href = weixinurl;
+    }else{
+      
+      this.$store.dispatch('GetWxUserBycode', {code}).then((value) => {
+        //this.loading = false
+        const userId = value.user.userId
+        if(value.token=='no_token')
+          this.$router.push({ path: this.redirect || `/setrole/${userId}` })
+      }).catch(() => {
+        //this.loading = false
+      })
 
-    // axios.get('http://193.169.100.166:8000/jspapi/1000006', {params: {code: code}}).then(function (response) {
-    //         console.log("qwlog==========")
-    //         console.log(response.data);
-    //         console.log(this.$route.name)
-    //   }).catch(function (error) {
-    //         console.log(error);
-    // });
-    this.$store.dispatch('GetWxUserBycode', {code}).then((value) => {
-      //this.loading = false
-      const userId = value.user.userId
-      if(value.token=='no_token')
-        this.$router.push({ path: this.redirect || `/setrole/${userId}` })
-    }).catch(() => {
-      //this.loading = false
-    })
-
-        //JS-SDK 认证请求
-    Vue.http.post('http://193.169.100.166:8000/jspapi/1000006',data).then((res) => {
-        //Vue.wechat.config(res)
-        //console.log(res.data);
-        Vue.wechat.config({
-            beta: true,// 必须这么写，否则wx.invoke调用形式的jsapi会有问题
-            debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-            appId: res.data.appId, // 必填，企业微信的corpID
-            timestamp:res.data.timestamp , // 必填，生成签名的时间戳
-            nonceStr: res.data.nonceStr, // 必填，生成签名的随机串
-            signature: res.data.signature,// 必填，签名，见 附录-JS-SDK使用权限签名算法
-            jsApiList: ['checkJsApi','chooseImage','getLocation'] // 必填，需要使用的JS接口列表，凡是要调用的接口都需要传进来
-        });
-        Vue.wechat.checkJsApi({
-            jsApiList: ['chooseImage',"getLocation"], // 需要检测的JS接口列表，所有JS接口列表见附录2,
-            success: function(res) {
-                // debugger
-                console.log('qwlog:-------');
-                // console.log(res);
-                // 以键值对的形式返回，可用的api值true，不可用为false
-                // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
-            }
-        });
-        Vue.wechat.getNetworkType({
-            success: function (res) {
-                var networkType = res.networkType; // 返回网络类型2g，3g，4g，wifi
-                //alert(networkType);
-            }
-        });
-        Vue.wechat.getLocation({
-            type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-            success: function (res) {
-                var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-                var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-                var speed = res.speed; // 速度，以米/每秒计
-                var accuracy = res.accuracy; // 位置精度
-                //alert('log2222222222:-------');
-                //console.log(latitude);
-                //console.log(latitude);
-            }
-        });
-    });
+      //JS-SDK 认证请求
+      Vue.http.post('http://193.169.100.166:8000/jspapi/1000006',data).then((res) => {
+          //Vue.wechat.config(res)
+          //console.log(res.data);
+          Vue.wechat.config({
+              beta: true,// 必须这么写，否则wx.invoke调用形式的jsapi会有问题
+              debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+              appId: res.data.appId, // 必填，企业微信的corpID
+              timestamp:res.data.timestamp , // 必填，生成签名的时间戳
+              nonceStr: res.data.nonceStr, // 必填，生成签名的随机串
+              signature: res.data.signature,// 必填，签名，见 附录-JS-SDK使用权限签名算法
+              jsApiList: ['checkJsApi','chooseImage','getLocation'] // 必填，需要使用的JS接口列表，凡是要调用的接口都需要传进来
+          });
+          Vue.wechat.checkJsApi({
+              jsApiList: ['chooseImage',"getLocation"], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+              success: function(res) {
+                  // debugger
+                  console.log('qwlog:-------');
+                  // console.log(res);
+                  // 以键值对的形式返回，可用的api值true，不可用为false
+                  // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+              }
+          });
+          Vue.wechat.getNetworkType({
+              success: function (res) {
+                  var networkType = res.networkType; // 返回网络类型2g，3g，4g，wifi
+                  //alert(networkType);
+              }
+          });
+          Vue.wechat.getLocation({
+              type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+              success: function (res) {
+                  var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                  var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                  var speed = res.speed; // 速度，以米/每秒计
+                  var accuracy = res.accuracy; // 位置精度
+                  //alert('log2222222222:-------');
+                  //console.log(latitude);
+                  //console.log(latitude);
+              }
+          });
+      });
+    }
 
   }
 
@@ -175,7 +171,7 @@ function GetUrlParam(paraName) {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
+/* h1, h2 {
   font-weight: normal;
 }
 ul {
@@ -188,5 +184,5 @@ li {
 }
 a {
   color: #42b983;
-}
+} */
 </style>

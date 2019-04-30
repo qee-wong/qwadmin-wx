@@ -13,7 +13,7 @@ Vue.use(AjaxPlugin)
 FastClick.attach(document.body)
 Vue.config.productionTip = false
 
-
+import '../static/css/reset.css'
 import store from './store'
 import './permission' // permission control
 

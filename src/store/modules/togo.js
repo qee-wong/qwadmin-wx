@@ -48,10 +48,11 @@ const user = {
     GetWxUserBycode({ commit }, params){
         return new Promise((resolve, reject) => {
           getWxUserBycode(params).then(res => {
+            debugger
               if(res.token == 'no_token'){
                 setWxUserInfo(res,commit)
               }else{
-                setToken(res.token, rememberMe)
+                setToken(res.token, false)
                 commit('SET_TOKEN', res.token)
                 setUserInfo(res.user, commit)
                 // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
