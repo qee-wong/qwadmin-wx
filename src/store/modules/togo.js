@@ -48,7 +48,6 @@ const user = {
     GetWxUserBycode({ commit }, params){
         return new Promise((resolve, reject) => {
           getWxUserBycode(params).then(res => {
-            debugger
               if(res.token == 'no_token'){
                 setWxUserInfo(res,commit)
               }else{

@@ -80,24 +80,27 @@ export default {
     if(code=='' || code == undefined) {
       window.location.href = weixinurl;
     }else{
-      
-      this.$store.dispatch('GetWxUserBycode', {code}).then((value) => {
-        //this.loading = false
-        const userId = value.user.userId
-        if(value.token=='no_token'){
-          this.$router.push({ path: this.redirect || `/setrole/${userId}` })
-        }else if(value.token!='no_token'){
-          const userId = value.user.username
-          this.$router.push({ path: this.redirect || `/main/${userId}`  })
-        }
-      }).catch(() => {
-        //this.loading = false
-      })
+      if(this.$store.state.togo.name!='' && this.$store.state.togo.name!=null ){
+        this.$router.push({ path: this.redirect || `/main/${this.$store.state.togo.name}`  })
+      }else{
+        this.$store.dispatch('GetWxUserBycode', {code}).then((value) => {
+          //this.loading = false
+          const userId = value.user.userId
+          if(value.token=='no_token'){
+            this.$router.push({ path: this.redirect || `/setrole/${userId}` })
+          }else if(value.token!='no_token'){
+            const userId = value.user.username
+            this.$router.push({ path: this.redirect || `/main/${userId}`  })
+          }
+        }).catch(() => {
+          //this.loading = false
+        })
+      }
 
       //JS-SDK 认证请求
       Vue.http.post('http://193.169.100.166:8000/jspapi/1000006',data).then((res) => {
           //Vue.wechat.config(res)
-          //console.log(res.data);
+          console.log(res.data);
           Vue.wechat.config({
               beta: true,// 必须这么写，否则wx.invoke调用形式的jsapi会有问题
               debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -110,8 +113,7 @@ export default {
           Vue.wechat.checkJsApi({
               jsApiList: ['chooseImage',"getLocation"], // 需要检测的JS接口列表，所有JS接口列表见附录2,
               success: function(res) {
-                  // debugger
-                  console.log('qwlog:-------');
+                  console.log('qwlog22:-------');
                   // console.log(res);
                   // 以键值对的形式返回，可用的api值true，不可用为false
                   // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
@@ -134,6 +136,24 @@ export default {
                   //console.log(latitude);
                   //console.log(latitude);
               }
+          });
+          Vue.wechat.ready(function(){
+              // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+              console.log('ready!!!!')
+              Vue.wechat.getNetworkType({
+                success: function (res) {
+                  //console.log("qwq+++++++++");
+                  //console.log(res.networkType);
+                },
+                fail: function (res) {
+                  console.log("qwqerrror");
+                  console.log(JSON.stringify(res));
+                }
+              });
+          });
+          Vue.wechat.error(function(res){
+              // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+              console.log(res)
           });
       });
     }

@@ -34,3 +34,19 @@ export function addUser(data) {
     data
   })
 }
+
+export function queryTest(params) {
+  return request({
+    url: '/api/userTest',
+    method: 'get',
+    
+  })
+}
+ 
+export function queryRolesTree(params) {
+  return request({
+    url: '/api/roles/tree',
+    method: 'get',
+    
+  })
+}
